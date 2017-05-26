@@ -16,6 +16,10 @@ $(function() {
 	console.log(gistdata);
 	if (!(gistdata.data) || !(gistdata.data.files)) {
 	    displayHelp();
+
+	    if (gistdata.data) {
+		$("#message").text(gistdata.data.message);
+	    }
 	} else {
 	    var files = gistdata.data.files;
 	    var filenames = Object.keys(files);
