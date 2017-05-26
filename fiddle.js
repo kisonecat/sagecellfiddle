@@ -1,26 +1,23 @@
-$(function() {
-    $('#hello').text('hello');
+function displayHelp() {
+    $("#sage").text("Could not load gist.");
+    var url = window.location.href.replace(/\?.*/,'');
+    $("#url").text(url);
+    $("#usage").show();	
+}
 
-    function displayHelp() {
-	$("#sage").text("Could not load gist.");
-	var url = window.location.href.replace(/\?.*/,'')
-	$("#url").text(url);
-	$("#usage").show();	
-    }
-    
+$(function() {
     var id = window.location.href.slice(window.location.href.indexOf('?') + 1);
-    var gistid = "cd54d03372dc893632a1aa5360219234";
-    
+
     $.ajax({
 	url: 'https://api.github.com/gists/'+id,
 	type: 'GET',
 	dataType: 'jsonp'
     }).success( function(gistdata) {
 	console.log(gistdata);
-	var files = gistdata.data.files;
-	if (files === undefined) {
+	if (!(gistdata.data) || !(gistdata.data.files)) {
 	    displayHelp();
 	} else {
+	    var files = gistdata.data.files;
 	    var filenames = Object.keys(files);
 	    var content = files[filenames[0]].content;
 
