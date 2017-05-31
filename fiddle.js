@@ -13,7 +13,6 @@ $(function() {
 	type: 'GET',
 	dataType: 'jsonp'
     }).success( function(gistdata) {
-	console.log(gistdata);
 	if (!(gistdata.data) || !(gistdata.data.files)) {
 	    displayHelp();
 
@@ -23,17 +22,31 @@ $(function() {
 	} else {
 	    var files = gistdata.data.files;
 	    var filenames = Object.keys(files);
-	    var content = files[filenames[0]].content;
-
+	    
 	    var template = $("a", "#edit").attr('href');
 	    $("a", "#edit").attr('href', template.replace('GISTID',id) );
 	    $("#edit").show();
+
+	    var cells = $("#cells");
 	    
-	    var script = document.createElement('script');
-	    script.text = content; 
-	    document.getElementById("sage").appendChild(script);
-	    
-	    sagecell.makeSagecell({"inputLocation": "#sage"});
+	    filenames.forEach( function(filename) {
+		var content = files[filename].content;
+
+		var header = $("<h3></h3>");
+		header.text(filename);
+		cells.append(header);
+		
+		var cell = $("<div></div>");
+		cells.append(cell);
+		
+		var script = document.createElement('script');
+		script.type = "text/x-sage";
+		script.text = content; 
+		cell.append(script);
+		
+		cell.uniqueId();
+		sagecell.makeSagecell({"inputLocation": "#" + cell.attr('id') });		
+	    });
 	}
     }).error( function(e) {
 	displayHelp();
